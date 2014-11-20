@@ -23,10 +23,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(multer({
-  dest:app.get('photos'),
+  dest:__dirname + '/public/photos',
   rename:function(fieldname,filename){
     return fieldname + '_' + filename + '_' + Date.now();
   }
+//  onFileUploadStart: function (file) {
+//    console.log(file.fieldname + ' is starting ...');
+//  }
 }));
 
 app.use(cookieParser());
@@ -37,6 +40,7 @@ app.use('/', photos);
 app.use('/users', users);
 app.get('/upload',photos);
 app.post('/upload',require('./routes/photoUpload').upload);
+app.get('/photo/:id/download',require('./routes/photoDownload').download(app.get('photos')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
